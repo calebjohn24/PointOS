@@ -3,7 +3,7 @@ import json
 
 GPIO.setmode(GPIO.BCM)
 
-pin_map_file = open('res/pinout.json')
+pin_map_file = open('/home/pi/PointOS/res/pinout.json')
 pin_map = dict(json.load(pin_map_file))
 
 motor_ena = pin_map['output']['motor_ena']

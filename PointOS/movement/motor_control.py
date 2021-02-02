@@ -4,7 +4,7 @@ import time
 
 GPIO.setmode(GPIO.BCM)
 
-pin_map_file = open('res/pinout.json')
+pin_map_file = open('/home/pi/PointOS/res/pinout.json')
 pin_map = dict(json.load(pin_map_file))
 
 motor_ena = pin_map['output']['motor_ena']
@@ -20,14 +20,15 @@ l_step = pin_map['output']['l_step']
 
 laser = pin_map['output']['laser']
 
-
 for pin in pin_map['output']:
     GPIO.setup(pin_map['output'][pin], GPIO.OUT)
-    GPIO.output(pin_map['output'][pin], 0)
+    GPIO.output(pin_map['output'][pin], GPIO.LOW)
 
-MODE = (motor_0, motor_1, motor_2)   # Microstep Resolution GPIO Pins
-RESOLUTION = {'Full': (0, 0, 0),
-              'Half': (1, 0, 0),
+
+
+MODE = (motor_0, motor_1, motor_2)
+RESOLUTION = {'1': (0, 0, 0),
+              '1/2': (1, 0, 0),
               '1/4': (0, 1, 0),
               '1/8': (1, 1, 0),
               '1/16': (0, 0, 1),
@@ -65,6 +66,7 @@ def set_direction(direction):
         GPIO.output(l_dir, 1)
         time.sleep(0.001)
 
+
 def move_right_motor(delay):
     GPIO.output(r_step, 1)
     time.sleep(delay)
@@ -75,3 +77,5 @@ def move_left_motor(delay):
     GPIO.output(l_step, 1)
     time.sleep(delay)
     GPIO.output(l_step, 0)
+
+
