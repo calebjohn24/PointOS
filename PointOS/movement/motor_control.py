@@ -20,6 +20,7 @@ l_step = pin_map['output']['l_step']
 
 laser = pin_map['output']['laser']
 
+
 for pin in pin_map['output']:
     GPIO.setup(pin_map['output'][pin], GPIO.OUT)
     GPIO.output(pin_map['output'][pin], GPIO.LOW)
@@ -79,3 +80,10 @@ def move_left_motor(delay):
     GPIO.output(l_step, 0)
 
 
+def motor_enable():
+    GPIO.output(motor_ena, 1)
+    time.sleep(0.01)
+
+def motor_disable():
+    GPIO.output(motor_ena, 0)
+    time.sleep(0.01)

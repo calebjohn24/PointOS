@@ -6,10 +6,10 @@
         "motor_1":27,
         "motor_2":17,
         "r_dir":26,
-        "l_dir":19,
+        "l_dir":13,
         "r_step":21,
-        "l_step":20,
-        "laser":13
+        "l_step":19,
+        "laser":12
     },
     "special":{
         "sda":2,
