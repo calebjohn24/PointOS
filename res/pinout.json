@@ -1,0 +1,19 @@
+{
+
+    "output":{
+        "motor_ena":4,
+        "motor_0":22,
+        "motor_1":27,
+        "motor_2":17,
+        "r_dir":26,
+        "l_dir":19,
+        "r_step":21,
+        "l_step":20,
+        "laser":13
+    },
+    "special":{
+        "sda":2,
+        "scl":3
+    }
+
+}
