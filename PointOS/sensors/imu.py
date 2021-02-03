@@ -7,8 +7,9 @@ global IMU
 IMU = serial.Serial('/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0', 115200)
 
 def open_imu():
-    IMU = serial.Serial(
-        '/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0', 115200)
+    if(not IMU.is_open):
+        IMU.open()
+        IMU.readline()
     IMU.readline()
 
 
@@ -30,4 +31,5 @@ def get_imu_data():
 
 
 def close_imu():
-    IMU.close()
+    if(IMU.is_open):
+        IMU.close()
