@@ -9,6 +9,8 @@
         "l_dir":13,
         "r_step":21,
         "l_step":19,
+        "lidar0_shutdown":23,
+        "lidar1_shutdown":18,
         "laser":12
     },
     "special":{
