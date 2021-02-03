@@ -36,10 +36,9 @@ RESOLUTION = {'1': (0, 0, 0),
               '1/32': (1, 0, 1)}
 
 
-r_speed = 50
-l_speed = 50
 
-delay_const = 0.00001
+
+
 
 def set_motor_res(step_res):
     GPIO.output(MODE, RESOLUTION[step_res])

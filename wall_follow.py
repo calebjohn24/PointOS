@@ -1,10 +1,8 @@
 import RPi.GPIO as GPIO
 import json
 import threading
-import VL53L0X
 import sys
 import time
-import serial
 
 
 from PointOS.movement import motor_control
@@ -33,46 +31,100 @@ sensor1_shutdown = pin_map['output']['lidar0_shutdown']
 sensor2_shutdown = pin_map['output']['lidar1_shutdown']
 
 
-'''
+global current_imu_data
+current_imu_data = [-1.0, -1.0, -1.0, -1.0, -1.0]
+
+global imu_flag
+imu_flag = 0
+
+global delay_r
+global delay_l
+
+global lidar_data
+global lidar_flag
+
+lidar_data = [-1.0, -1.0]
+lidar_flag = 0
+
+lidar_data[0] = lidar.get_lidar_1()
+lidar_data[1] = lidar.get_lidar_2()
+
 imu.open_imu()
-print(imu.get_imu_data())
-print(imu.get_imu_data())
-imu.close_imu()
-print('reset IMU')
-imu.open_imu()
-print(imu.get_imu_data())
-print(imu.get_imu_data())
-'''
 
-
-print(lidar.get_both_sensors())
-print(lidar.get_lidar_1())
-print(lidar.get_lidar_2())
-
-time.sleep(5)
-
-print(lidar.get_both_sensors())
-
-print(lidar.get_lidar_1())
-print(lidar.get_lidar_2())
+current_imu_data = imu.get_imu_data()
 
 
 
-motor_control.set_direction('b')
-motor_control.set_motor_res('1/2')
 
 
-'''
+
+def move_right_motor():
+    for i in range(2000):
+        motor_control.move_right_motor(delay_r)
+    return
+
+
+def move_left_motor():
+    for i in range(2000):
+        motor_control.move_left_motor(delay_l)
+    return
+
+
+def read_imu():
+    while(imu_flag == 0):
+        imu_arr = imu.get_imu_data()
+        current_imu_data[0] = imu_arr[0]
+        current_imu_data[1] = imu_arr[1]
+        current_imu_data[2] = imu_arr[2]
+        current_imu_data[3] = imu_arr[3]
+        current_imu_data[4] = imu_arr[4]
+    return
+
+
+def read_lidars():
+    while(lidar_flag == 0):
+        lidar_data[0] = lidar.get_lidar_1()
+        lidar_data[1] = lidar.get_lidar_2()
+        time.sleep(0.01)
+    return
+
+
+imu_thread = threading.Thread(target=read_imu, args=())
+lidar_thread = threading.Thread(target=read_lidars, args=())
+imu_thread.start()
+lidar_thread.start()
+
+delay_r = 0.0005
+delay_l = 0.0005
+
+motor_control.set_direction('f')
+motor_control.set_motor_res('1/4')
 motor_control.motor_enable()
 
-for i in range(10000):
-    motor_control.move_left_motor(0.00015)
 
-for i in range(10000):
-    motor_control.move_right_motor(0.00015)
+right_motor_thread = threading.Thread(
+    target=move_right_motor, args=())
+left_motor_thread = threading.Thread(
+    target=move_left_motor, args=())
 
+print(lidar_data)
+print(current_imu_data)
+right_motor_thread.start()
+left_motor_thread.start()
+right_motor_thread.join()
+left_motor_thread.join()
 motor_control.motor_disable()
-'''
+print(lidar_data)
+print(current_imu_data)
+
+
+
+imu_flag = 1
+lidar_flag = 1
+imu_thread.join()
+lidar_thread.join()
+
+
 
 
 GPIO.cleanup()
