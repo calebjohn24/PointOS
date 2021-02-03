@@ -9,44 +9,7 @@ import serial
 
 from PointOS.movement import motor_control
 
-# Establish the connection on a specific port
-IMU = serial.Serial(
-    '/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0', 115200)
-IMU.readline()
-IMU.readline()
 
-for i in range(100):
-    imu_raw = (str(IMU.readline())).split(',')
-    imu_raw[0] = imu_raw[0][2:]
-    imu_raw[-1] = imu_raw[-1][:-5]
-    try:
-        heading = float(imu_raw[0])
-        gyro_x = float(imu_raw[1])
-        gyro_y = float(imu_raw[2])
-        accel_x = float(imu_raw[3])
-        accel_y = float(imu_raw[4])
-        print('----------')
-        print("heading: " + str(heading))
-        print("gyro_x: " + str(gyro_x))
-        print("gyro_y: " + str(gyro_y))
-        print("accel_x: " + str(accel_x))
-        print("accel_y: " + str(accel_y))
-        print('----------')
-    except Exception as e:
-        print(e)
-
-
-IMU.close()
-
-# Establish the connection on a specific port
-st = time.time()
-IMU = serial.Serial(
-    '/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0', 115200)
-IMU.readline()
-end = time.time() - st
-print("elapse: " + str(end))
-time.sleep(10)
-IMU.readline()
 
 
 for i in range(100):
