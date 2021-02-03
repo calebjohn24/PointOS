@@ -40,6 +40,9 @@ imu_flag = 0
 global delay_r
 global delay_l
 
+global step_count
+step_count = [0,0]
+
 global lidar_data
 global lidar_flag
 
@@ -48,6 +51,10 @@ lidar_flag = 0
 
 lidar_data[0] = lidar.get_lidar_1()
 lidar_data[1] = lidar.get_lidar_2()
+
+lidar_data[0] = lidar.get_lidar_1()
+lidar_data[1] = lidar.get_lidar_2()
+
 
 imu.open_imu()
 
@@ -61,12 +68,14 @@ current_imu_data = imu.get_imu_data()
 def move_right_motor():
     for i in range(2000):
         motor_control.move_right_motor(delay_r)
+        step_count[0] = i
     return
 
 
 def move_left_motor():
     for i in range(2000):
         motor_control.move_left_motor(delay_l)
+        step_count[1] = i
     return
 
 
@@ -85,6 +94,7 @@ def read_lidars():
     while(lidar_flag == 0):
         lidar_data[0] = lidar.get_lidar_1()
         lidar_data[1] = lidar.get_lidar_2()
+
         time.sleep(0.01)
     return
 
@@ -97,7 +107,7 @@ lidar_thread.start()
 delay_r = 0.0005
 delay_l = 0.0005
 
-motor_control.set_direction('f')
+motor_control.set_direction('b')
 motor_control.set_motor_res('1/4')
 motor_control.motor_enable()
 
@@ -106,6 +116,8 @@ right_motor_thread = threading.Thread(
     target=move_right_motor, args=())
 left_motor_thread = threading.Thread(
     target=move_left_motor, args=())
+
+
 
 print(lidar_data)
 print(current_imu_data)
@@ -116,8 +128,6 @@ left_motor_thread.join()
 motor_control.motor_disable()
 print(lidar_data)
 print(current_imu_data)
-
-
 
 imu_flag = 1
 lidar_flag = 1
