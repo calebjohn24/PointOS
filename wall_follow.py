@@ -39,6 +39,8 @@ imu_flag = 0
 
 global delay_r
 global delay_l
+delay_r = 0.0005
+delay_l = 0.0005
 
 global step_count
 step_count = [0,0]
@@ -55,6 +57,9 @@ lidar_data[1] = lidar.get_lidar_2()
 lidar_data[0] = lidar.get_lidar_1()
 lidar_data[1] = lidar.get_lidar_2()
 
+global prev_errors
+
+prev_errors = [0,0]
 
 imu.open_imu()
 
@@ -62,6 +67,38 @@ current_imu_data = imu.get_imu_data()
 
 
 
+motor_control.set_motor_res('1/4')
+motor_control.motor_enable()
+start_1 = lidar_data[0]
+start_2 = lidar_data[1]
+
+
+if(start_1 > start_2): #turn left
+    motor_control.set_direction('l')
+    diff = lidar_data[0] - lidar_data[1]
+    if(diff > 1.0):
+        while(lidar_data[0] - lidar_data[1] > 1.0):
+            for i in range(1000):
+                motor_control.move_right_motor(0.0006)
+                motor_control.move_left_motor(0.0006)
+            lidar_data[0] = lidar.get_lidar_1()
+            lidar_data[1] = lidar.get_lidar_2()
+
+
+elif(start_2 > start_1): # turn right
+    motor_control.set_direction('r')
+    diff = lidar_data[1] - lidar_data[0]
+    if(diff > 1.0):
+        while(lidar_data[1] - lidar_data[0] > 1.0):
+            for i in range(1000):
+                motor_control.move_right_motor(0.0006)
+                motor_control.move_left_motor(0.0006)
+            lidar_data[0] = lidar.get_lidar_1()
+            lidar_data[1] = lidar.get_lidar_2()
+
+
+start_1 = lidar_data[0]
+start_2 = lidar_data[1]
 
 
 
@@ -90,10 +127,28 @@ def read_imu():
     return
 
 
+
+KP = 0.00001
+KD = 0.0000025
+KI = 0.0000001
+
+
 def read_lidars():
     while(lidar_flag == 0):
         lidar_data[0] = lidar.get_lidar_1()
         lidar_data[1] = lidar.get_lidar_2()
+        current_error = lidar_data[0] - lidar_data[1]
+        adj = (current_error * KP) + (prev_errors[0] * KD) + (prev_errors[1] * KI)
+        if(adj > 0.0): # adj left +
+            delay_l = delay_l + adj
+            delay_r = delay_r - adj
+            prev_errors[1] += current_error
+            prev_errors[0] = current_error
+        elif(adj < 0.0): # adj right +
+            delay_r = delay_r + adj
+            delay_l = delay_l - adj
+            prev_errors[1] += current_error
+            prev_errors[0] = current_error
 
         time.sleep(0.01)
     return
@@ -104,10 +159,9 @@ lidar_thread = threading.Thread(target=read_lidars, args=())
 imu_thread.start()
 lidar_thread.start()
 
-delay_r = 0.0005
-delay_l = 0.0005
 
-motor_control.set_direction('b')
+
+motor_control.set_direction('f')
 motor_control.set_motor_res('1/4')
 motor_control.motor_enable()
 
