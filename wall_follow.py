@@ -33,6 +33,7 @@ sensor2_shutdown = pin_map['output']['lidar1_shutdown']
 
 global current_imu_data
 current_imu_data = [-1.0, -1.0, -1.0, -1.0, -1.0]
+#Heading, gyro_x, gyro_y, accel_x, accel_y
 
 global imu_flag
 imu_flag = 0
@@ -43,7 +44,7 @@ delay_r = 0.0005
 delay_l = 0.0005
 
 global step_count
-step_count = [0,0]
+step_count = [0,0]#0 index Left, 1 index Right
 
 global lidar_data
 global lidar_flag
@@ -51,15 +52,15 @@ global lidar_flag
 lidar_data = [-1.0, -1.0]
 lidar_flag = 0
 
-lidar_data[0] = lidar.get_lidar_1()
-lidar_data[1] = lidar.get_lidar_2()
+lidar_data[0] = lidar.get_lidar_1()# front sensor
+lidar_data[1] = lidar.get_lidar_2()# back sensor
 
 lidar_data[0] = lidar.get_lidar_1()
 lidar_data[1] = lidar.get_lidar_2()
 
 global prev_errors
 
-prev_errors = [0,0]
+prev_errors = [0.0,0.0] #0 Index is last error, 1 Index is cum error
 
 imu.open_imu()
 
