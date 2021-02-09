@@ -26,18 +26,15 @@ for pin in pin_map['output']:
     GPIO.output(pin_map['output'][pin], GPIO.LOW)
 
 
-
 MODE = (motor_0, motor_1, motor_2)
-RESOLUTION = {'1': (0, 0, 0),
-              '1/2': (1, 0, 0),
-              '1/4': (0, 1, 0),
-              '1/8': (1, 1, 0),
-              '1/16': (0, 0, 1),
-              '1/32': (1, 0, 1)}
-
-
-
-
+RESOLUTION = {
+    '1': (0, 0, 0),
+    '1/2': (1, 0, 0),
+    '1/4': (0, 1, 0),
+    '1/8': (1, 1, 0),
+    '1/16': (0, 0, 1),
+    '1/32': (1, 0, 1)
+}
 
 
 def set_motor_res(step_res):
@@ -82,6 +79,7 @@ def move_left_motor(delay):
 def motor_enable():
     GPIO.output(motor_ena, 1)
     time.sleep(0.01)
+
 
 def motor_disable():
     GPIO.output(motor_ena, 0)
