@@ -39,7 +39,7 @@ global imu_flag
 imu_flag = 0
 
 global delays
-delays = [0.0005,0.0005]# r,l
+delays = [0.00001,0.00001]# r,l
 delay_r = 0.0005
 delay_l = 0.0005
 
@@ -116,25 +116,26 @@ def read_imu():
 
 
 def move_right_motor():
-    for i in range(20000):
-        motor_control.move_right_motor(delays[0])
-        step_count[0] = i
+    while imu_flag == 0:
+        motor_control.move_right_motor(0.000055)
+        step_count[0] += 1
     return
 
 
 def move_left_motor():
-    for i in range(20000):
-        motor_control.move_left_motor(delays[1])
-        step_count[1] = i
+    while imu_flag == 0:
+        motor_control.move_left_motor(0.000055)
+        step_count[1] += 1
     return
 
 
 
 
 def read_lidars():
-    KP = 0.000000018
-    KD = 0.000000004
-    KI = 0.00000000002
+    KP = 0.000000005
+    KD = 0.00000000
+    KI = 0.000000000
+    current_error = 0
     lidar_tgt = int((lidar_data[0] + lidar_data[1])/2)
     while(lidar_flag == 0):
         lidar_data_1 = lidar.get_lidar_1()
@@ -143,18 +144,13 @@ def read_lidars():
 
         current_error = lidar_tgt - lidar_score
         adj = (current_error * KP) + (prev_errors[0] * KD) + (prev_errors[1] * KI)
-        if(adj > 0): # slow down right motor
-            if(delays[1] > 0.0002):# max left motor speed
-                delays[1] -= adj
-                delays[0] += adj
-        if(adj < 0):# slow down left motor
-            if(delays[0] > 0.0002):# max right motor speed
-                delays[0] -= adj
-                delays[1] += adj
+        if(delays[1] > 0.0001 and delays[0] > 0.0001):# max motor speed
+            delays[1] -= adj
+            delays[0] += adj
 
-        print(current_error)
-        print(str(delays[1]) + ' l')
-        print(str(delays[0]) + ' r')
+    print(current_error)
+    print(str(delays[1]) + ' l')
+    print(str(delays[0]) + ' r')
 
     return
 
@@ -182,13 +178,16 @@ print(lidar_data)
 print(current_imu_data)
 right_motor_thread.start()
 left_motor_thread.start()
+time.sleep(10)
+imu_flag = 1
 right_motor_thread.join()
 left_motor_thread.join()
 motor_control.motor_disable()
 print(lidar_data)
 print(current_imu_data)
 
-imu_flag = 1
+print(step_count)
+
 lidar_flag = 1
 imu_thread.join()
 lidar_thread.join()
