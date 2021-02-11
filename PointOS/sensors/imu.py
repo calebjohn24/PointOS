@@ -26,6 +26,7 @@ def get_imu_data():
         return[heading, gyro_x, gyro_y, accel_x, accel_y]
     except Exception as e:
         print(e)
+        print("bad IMU data ignore")
         return[-1,-1,-1,-1,-1]
     
 

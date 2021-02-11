@@ -38,8 +38,8 @@ current_imu_data = [-1.0, -1.0, -1.0, -1.0, -1.0]
 global imu_flag
 imu_flag = 0
 
-global delay_r
-global delay_l
+global delays
+delays = [0.0005,0.0005]# r,l
 delay_r = 0.0005
 delay_l = 0.0005
 
@@ -74,26 +74,26 @@ start_1 = lidar_data[0]
 start_2 = lidar_data[1]
 
 
-if(start_1 > start_2): #turn left
-    motor_control.set_direction('l')
+if(start_1 > start_2): #turn right
+    motor_control.set_direction('r')
     diff = lidar_data[0] - lidar_data[1]
     if(diff > 1.0):
-        while(lidar_data[0] - lidar_data[1] > 1.0):
-            for i in range(1000):
-                motor_control.move_right_motor(0.0006)
-                motor_control.move_left_motor(0.0006)
+        while(lidar_data[0] - lidar_data[1] > 0):
+            for i in range(25):
+                motor_control.move_right_motor(0.00075)
+                motor_control.move_left_motor(0.00075)
             lidar_data[0] = lidar.get_lidar_1()
             lidar_data[1] = lidar.get_lidar_2()
 
 
-elif(start_2 > start_1): # turn right
-    motor_control.set_direction('r')
+elif(start_2 > start_1): # turn left
+    motor_control.set_direction('l')
     diff = lidar_data[1] - lidar_data[0]
     if(diff > 1.0):
-        while(lidar_data[1] - lidar_data[0] > 1.0):
-            for i in range(1000):
-                motor_control.move_right_motor(0.0006)
-                motor_control.move_left_motor(0.0006)
+        while(lidar_data[1] - lidar_data[0] > 0):
+            for i in range(25):
+                motor_control.move_right_motor(0.00075)
+                motor_control.move_left_motor(0.00075)
             lidar_data[0] = lidar.get_lidar_1()
             lidar_data[1] = lidar.get_lidar_2()
 
@@ -101,20 +101,6 @@ elif(start_2 > start_1): # turn right
 start_1 = lidar_data[0]
 start_2 = lidar_data[1]
 
-
-
-def move_right_motor():
-    for i in range(2000):
-        motor_control.move_right_motor(delay_r)
-        step_count[0] = i
-    return
-
-
-def move_left_motor():
-    for i in range(2000):
-        motor_control.move_left_motor(delay_l)
-        step_count[1] = i
-    return
 
 
 def read_imu():
@@ -129,29 +115,47 @@ def read_imu():
 
 
 
-KP = 0.00001
-KD = 0.0000025
-KI = 0.0000001
+def move_right_motor():
+    for i in range(20000):
+        motor_control.move_right_motor(delays[0])
+        step_count[0] = i
+    return
+
+
+def move_left_motor():
+    for i in range(20000):
+        motor_control.move_left_motor(delays[1])
+        step_count[1] = i
+    return
+
+
 
 
 def read_lidars():
+    KP = 0.000000018
+    KD = 0.000000004
+    KI = 0.00000000002
+    lidar_tgt = int((lidar_data[0] + lidar_data[1])/2)
     while(lidar_flag == 0):
-        lidar_data[0] = lidar.get_lidar_1()
-        lidar_data[1] = lidar.get_lidar_2()
-        current_error = lidar_data[0] - lidar_data[1]
-        adj = (current_error * KP) + (prev_errors[0] * KD) + (prev_errors[1] * KI)
-        if(adj > 0.0): # adj left +
-            delay_l = delay_l + adj
-            delay_r = delay_r - adj
-            prev_errors[1] += current_error
-            prev_errors[0] = current_error
-        elif(adj < 0.0): # adj right +
-            delay_r = delay_r + adj
-            delay_l = delay_l - adj
-            prev_errors[1] += current_error
-            prev_errors[0] = current_error
+        lidar_data_1 = lidar.get_lidar_1()
+        lidar_data_2 = lidar.get_lidar_2()
+        lidar_score = int((lidar_data_1 + lidar_data_2)/2)
 
-        time.sleep(0.01)
+        current_error = lidar_tgt - lidar_score
+        adj = (current_error * KP) + (prev_errors[0] * KD) + (prev_errors[1] * KI)
+        if(adj > 0): # slow down right motor
+            if(delays[1] > 0.0002):# max left motor speed
+                delays[1] -= adj
+                delays[0] += adj
+        if(adj < 0):# slow down left motor
+            if(delays[0] > 0.0002):# max right motor speed
+                delays[0] -= adj
+                delays[1] += adj
+
+        print(current_error)
+        print(str(delays[1]) + ' l')
+        print(str(delays[0]) + ' r')
+
     return
 
 
@@ -190,6 +194,5 @@ imu_thread.join()
 lidar_thread.join()
 
 
-
-
 GPIO.cleanup()
+sys.exit()
