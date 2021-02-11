@@ -39,7 +39,7 @@ global imu_flag
 imu_flag = 0
 
 global delays
-delays = [0.00001,0.00001]# r,l
+delays = [0.0001,0.0001]# r,l
 delay_r = 0.0005
 delay_l = 0.0005
 
@@ -68,7 +68,7 @@ current_imu_data = imu.get_imu_data()
 
 
 
-motor_control.set_motor_res('1/4')
+motor_control.set_motor_res('1/2')
 motor_control.motor_enable()
 start_1 = lidar_data[0]
 start_2 = lidar_data[1]
@@ -80,8 +80,8 @@ if(start_1 > start_2): #turn right
     if(diff > 1.0):
         while(lidar_data[0] - lidar_data[1] > 0):
             for i in range(25):
-                motor_control.move_right_motor(0.00075)
-                motor_control.move_left_motor(0.00075)
+                motor_control.move_right_motor(0.0002)
+                motor_control.move_left_motor(0.0002)
             lidar_data[0] = lidar.get_lidar_1()
             lidar_data[1] = lidar.get_lidar_2()
 
@@ -92,8 +92,8 @@ elif(start_2 > start_1): # turn left
     if(diff > 1.0):
         while(lidar_data[1] - lidar_data[0] > 0):
             for i in range(25):
-                motor_control.move_right_motor(0.00075)
-                motor_control.move_left_motor(0.00075)
+                motor_control.move_right_motor(0.0002)
+                motor_control.move_left_motor(0.0002)
             lidar_data[0] = lidar.get_lidar_1()
             lidar_data[1] = lidar.get_lidar_2()
 
@@ -117,14 +117,14 @@ def read_imu():
 
 def move_right_motor():
     while imu_flag == 0:
-        motor_control.move_right_motor(0.000055)
+        motor_control.move_right_motor(delays[0])
         step_count[0] += 1
     return
 
 
 def move_left_motor():
     while imu_flag == 0:
-        motor_control.move_left_motor(0.000055)
+        motor_control.move_left_motor(delays[1])
         step_count[1] += 1
     return
 
@@ -132,7 +132,7 @@ def move_left_motor():
 
 
 def read_lidars():
-    KP = 0.000000005
+    KP = 0.000000001
     KD = 0.00000000
     KI = 0.000000000
     current_error = 0
@@ -144,7 +144,7 @@ def read_lidars():
 
         current_error = lidar_tgt - lidar_score
         adj = (current_error * KP) + (prev_errors[0] * KD) + (prev_errors[1] * KI)
-        if(delays[1] > 0.0001 and delays[0] > 0.0001):# max motor speed
+        if(delays[1] > 0.00005 and delays[0] > 0.00005):# max motor speed
             delays[1] -= adj
             delays[0] += adj
 
@@ -163,7 +163,7 @@ lidar_thread.start()
 
 
 motor_control.set_direction('f')
-motor_control.set_motor_res('1/4')
+motor_control.set_motor_res('1/2')
 motor_control.motor_enable()
 
 
@@ -178,7 +178,7 @@ print(lidar_data)
 print(current_imu_data)
 right_motor_thread.start()
 left_motor_thread.start()
-time.sleep(10)
+time.sleep(18)
 imu_flag = 1
 right_motor_thread.join()
 left_motor_thread.join()
