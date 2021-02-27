@@ -29,12 +29,12 @@ motor_control.set_motor_res('1/2')
 motor_control.motor_enable()
 
 
-for i in range(1000):
+for i in range(10000):
     motor_control.move_motors(0.0021)
 
 time.sleep(0.2)
 motor_control.set_direction('b')
-for i in range(1000):
+for i in range(10000):
     motor_control.move_motors(0.0021)
 
 time.sleep(0.2)
