@@ -15,8 +15,7 @@ motor_2 = pin_map['output']['motor_2']
 r_dir = pin_map['output']['r_dir']
 l_dir = pin_map['output']['l_dir']
 
-r_step = pin_map['output']['r_step']
-l_step = pin_map['output']['l_step']
+step = pin_map['output']['step']
 
 laser = pin_map['output']['laser']
 
@@ -64,16 +63,11 @@ def set_direction(direction):
         time.sleep(0.001)
 
 
-def move_right_motor(delay):
-    GPIO.output(r_step, 1)
+def move_motors(delay):
+    GPIO.output(step, 1)
     time.sleep(delay)
-    GPIO.output(r_step, 0)
+    GPIO.output(step, 0)
 
-
-def move_left_motor(delay):
-    GPIO.output(l_step, 1)
-    time.sleep(delay)
-    GPIO.output(l_step, 0)
 
 
 def motor_enable():

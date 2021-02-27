@@ -5,10 +5,9 @@
         "motor_0":22,
         "motor_1":27,
         "motor_2":17,
-        "r_dir":26,
-        "l_dir":13,
-        "r_step":21,
-        "l_step":19,
+        "l_dir":26,
+        "r_dir":19,
+        "step":13,
         "lidar0_shutdown":23,
         "lidar1_shutdown":18,
         "laser":12
@@ -16,6 +15,10 @@
     "special":{
         "sda":2,
         "scl":3
+    },
+    "servo_pos":{
+        "fwd":76,
+        "turn":145
     }
 
 }
