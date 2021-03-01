@@ -122,9 +122,9 @@ def read_imu():
 
 
 def move_motors():
-    for i in range(20000):
+    while imu_flag == 0:
         motor_control.move_motors(0.00015)
-        step_count[0] = i
+        step_count[0]+= 1
     return
 
 
