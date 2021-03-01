@@ -50,8 +50,9 @@ delay_r = 0.0005
 delay_l = 0.0005
 
 global step_count
-step_count = [0,0]#0 index Left, 1 index Right
-
+step_count = [0]#0 index Left, 1 index Right
+global steer_val
+steer_val = [0]
 global lidar_data
 global lidar_flag
 
@@ -132,9 +133,7 @@ def move_motors():
 
 
 def read_lidars():
-    KP = 0.000000018
-    KD = 0.000000004
-    KI = 0.00000000002
+
     lidar_tgt = int((lidar_data[0] + lidar_data[1])/2)
     while(lidar_flag == 0):
         lidar_data_1 = lidar.get_lidar_1()
@@ -142,19 +141,15 @@ def read_lidars():
         lidar_score = int((lidar_data_1 + lidar_data_2)/2)
 
         current_error = lidar_tgt - lidar_score
-        adj = (current_error * KP) + (prev_errors[0] * KD) + (prev_errors[1] * KI)
-        if(adj > 0): # slow down right motor
-            if(delays[1] > 0.0002):# max left motor speed
-                delays[1] -= adj
-                delays[0] += adj
-        if(adj < 0):# slow down left motor
-            if(delays[0] > 0.0002):# max right motor speed
-                delays[0] -= adj
-                delays[1] += adj
-
-        print(current_error)
-        print(str(delays[1]) + ' l')
-        print(str(delays[0]) + ' r')
+        if(current_error > 2):
+            motor_control.steer_left()
+            steer_val[0] = 1
+        elif(current_error < -2):
+            motor_control.steer_right()
+            steer_val[0] = -1
+        else:
+            motor_control.steer_straight()
+            steer_val[0] = 0
 
     return
 
@@ -167,7 +162,7 @@ lidar_thread.start()
 
 
 motor_control.set_direction('f')
-motor_control.set_motor_res('1/4')
+motor_control.set_motor_res('1/2')
 motor_control.motor_enable()
 
 
@@ -180,14 +175,15 @@ motor_thread = threading.Thread(
 print(lidar_data)
 print(current_imu_data)
 motor_thread.start()
-motor_thread.join()
 
-motor_control.motor_disable()
 print(lidar_data)
 print(current_imu_data)
 
 imu_flag = 1
 lidar_flag = 1
+motor_thread.join()
+
+motor_control.motor_disable()
 imu_thread.join()
 lidar_thread.join()
 
