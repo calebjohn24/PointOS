@@ -17,6 +17,11 @@ l_dir = pin_map['output']['l_dir']
 
 step = pin_map['output']['step']
 
+steer_straight_pin = pin_map['output']['straight_pin']
+steer_right_pin = pin_map['output']['right_pin']
+steer_left_pin = pin_map['output']['left_pin']
+steer_turn_pin = pin_map['output']['turn_pin']
+
 laser = pin_map['output']['laser']
 
 
@@ -46,21 +51,25 @@ def set_direction(direction):
         time.sleep(0.001)
         GPIO.output(l_dir, 0)
         time.sleep(0.001)
+        steer_turn()
     elif(direction == 'b'):
         GPIO.output(r_dir, 0)
         time.sleep(0.001)
         GPIO.output(l_dir, 1)
         time.sleep(0.001)
+        steer_straight()
     elif(direction == 'r'):
         GPIO.output(r_dir, 0)
         time.sleep(0.001)
         GPIO.output(l_dir, 0)
         time.sleep(0.001)
+        steer_straight()
     elif(direction == 'l'):
         GPIO.output(r_dir, 1)
         time.sleep(0.001)
         GPIO.output(l_dir, 1)
         time.sleep(0.001)
+        steer_turn()
 
 
 def move_motors(delay):
@@ -77,4 +86,34 @@ def motor_enable():
 
 def motor_disable():
     GPIO.output(motor_ena, 0)
+    time.sleep(0.01)
+
+
+def steer_turn():
+    GPIO.output(steer_turn_pin, 1)
+    GPIO.output(steer_straight_pin , 0)
+    GPIO.output(steer_right_pin, 0)
+    GPIO.output(steer_left_pin, 0)
+    time.sleep(0.01)
+
+
+def steer_straight():
+    GPIO.output(steer_turn_pin, 0)
+    GPIO.output(steer_straight_pin , 1)
+    GPIO.output(steer_right_pin, 0)
+    GPIO.output(steer_left_pin, 0)
+    time.sleep(0.01)
+
+def steer_right():
+    GPIO.output(steer_turn_pin, 0)
+    GPIO.output(steer_straight_pin , 0)
+    GPIO.output(steer_right_pin, 1)
+    GPIO.output(steer_left_pin, 0)
+    time.sleep(0.01)
+
+def steer_left():
+    GPIO.output(steer_turn_pin, 0)
+    GPIO.output(steer_straight_pin , 0)
+    GPIO.output(steer_right_pin, 0)
+    GPIO.output(steer_left_pin, 1)
     time.sleep(0.01)

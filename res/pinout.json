@@ -10,7 +10,11 @@
         "step":13,
         "lidar0_shutdown":23,
         "lidar1_shutdown":18,
-        "laser":12
+        "laser":12,
+        "straight_pin":21,
+        "right_pin":20,
+        "left_pin":16,
+        "turn_pin":24
     },
     "special":{
         "sda":2,
@@ -18,11 +22,8 @@
     },
     "servo_pos":{
         "fwd_pos":75,
-        "turn_pos":145,
-        "straight_pin":21,
-        "right_pin":20,
-        "left_pin":16,
-        "turn_pin":12
+        "turn_pos":145
+        
     }
 
 }
