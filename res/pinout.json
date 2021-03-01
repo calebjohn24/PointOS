@@ -17,8 +17,12 @@
         "scl":3
     },
     "servo_pos":{
-        "fwd":75,
-        "turn":145
+        "fwd_pos":75,
+        "turn_pos":145,
+        "straight_pin":21,
+        "right_pin":20,
+        "left_pin":16,
+        "turn_pin":12
     }
 
 }
