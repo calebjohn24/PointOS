@@ -3,10 +3,13 @@ import json
 import threading
 import sys
 import time
+import csv
 
 
 from PointOS.movement import motor_control
 from PointOS.sensors import imu, lidar
+
+filename_out = "training_data/forward_td.csv"
 
 
 pin_map_file = open('/home/pi/PointOS/res/pinout.json')
@@ -44,17 +47,16 @@ current_imu_data = [-1.0, -1.0, -1.0, -1.0, -1.0]
 global imu_flag
 imu_flag = 0
 
-global delays
-delays = [0.0005,0.0005]# r,l
-delay_r = 0.0005
-delay_l = 0.0005
 
 global step_count
-step_count = [0]#0 index Left, 1 index Right
+step_count = [0]
 global steer_val
 steer_val = [0]
 global lidar_data
 global lidar_flag
+
+global output_arr
+output_arr = []
 
 lidar_data = [-1.0, -1.0]
 lidar_flag = 0
@@ -113,11 +115,16 @@ start_2 = lidar_data[1]
 def read_imu():
     while(imu_flag == 0):
         imu_arr = imu.get_imu_data()
-        current_imu_data[0] = imu_arr[0]
-        current_imu_data[1] = imu_arr[1]
-        current_imu_data[2] = imu_arr[2]
-        current_imu_data[3] = imu_arr[3]
-        current_imu_data[4] = imu_arr[4]
+        step_count_val = str(step_count[0])
+        steer = str(steer_val[0])
+        imu_heading = str(imu_arr[0])
+        imu_gyro_x = str(imu_arr[1])
+        imu_gyro_y = str(imu_arr[2]) 
+        imu_accel_x = str(imu_arr[3]) 
+        imu_accel_y = str(imu_arr[4])
+
+        output_arr.append([steer,step_count_val, imu_heading, imu_gyro_x, imu_gyro_y, imu_accel_x, imu_accel_y])
+
     return
 
 
@@ -186,6 +193,12 @@ motor_thread.join()
 motor_control.motor_disable()
 imu_thread.join()
 lidar_thread.join()
+
+
+
+with open(filename_out, 'a') as csvfile:  
+    csv_out = csv.writer(csvfile)  
+    csv_out.writerows(output_arr) 
 
 
 GPIO.cleanup()
