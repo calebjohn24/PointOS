@@ -1,0 +1,29 @@
+{
+
+    "output":{
+        "motor_ena":4,
+        "motor_0":22,
+        "motor_1":27,
+        "motor_2":17,
+        "l_dir":26,
+        "r_dir":19,
+        "step":13,
+        "lidar0_shutdown":23,
+        "lidar1_shutdown":18,
+        "laser":12,
+        "straight_pin":21,
+        "right_pin":20,
+        "left_pin":16,
+        "turn_pin":24
+    },
+    "special":{
+        "sda":2,
+        "scl":3
+    },
+    "servo_pos":{
+        "fwd_pos":75,
+        "turn_pos":145
+        
+    }
+
+}
