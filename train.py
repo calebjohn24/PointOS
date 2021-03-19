@@ -44,8 +44,12 @@ imu_flag = [0]
 global step_count
 step_count = [0]
 
+global steer_dir
+steer_dir = [1]
+
 global output
 output = []
+
 
 camera = PiCamera()
 camera.resolution = (600, 600)
@@ -64,7 +68,7 @@ def read_imu():
         imu_arr = imu.get_imu_data()
         if(imu_arr[0] != -1 and step_count[0] > 0):
 
-            output.append([step_count[0], imu_arr[0], imu_arr[1], imu_arr[2], imu_arr[3], imu_arr[4]])
+            output.append([steer_dir[0], step_count[0], imu_arr[0], imu_arr[1], imu_arr[2], imu_arr[3], imu_arr[4]])
     return
 
 

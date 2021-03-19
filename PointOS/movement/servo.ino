@@ -31,19 +31,19 @@ void loop()
 
     if (sum < 2)
     {
-        if (straight == 1 || sum == 0)
+        if (straight == 1)
         {
             myservo.write(pos); // tell servo to go to position in variable 'pos'
             delay(100);
         }
         else if (right == 1)
         {
-            myservo.write(pos + 1); // tell servo to go to position in variable 'pos'
+            myservo.write(pos + 3); // tell servo to go to position in variable 'pos'
             delay(100);
         }
         else if (left == 1)
         {
-            myservo.write(pos - 1); // tell servo to go to position in variable 'pos'
+            myservo.write(pos - 3); // tell servo to go to position in variable 'pos'
             delay(100);
         }
         else if (turn == 1)
