@@ -14,9 +14,8 @@ def open_imu():
 
 
 def get_imu_data():
-    imu_raw = (str(IMU.readline())).split(',')
-    imu_raw[0] = imu_raw[0][2:]
-    imu_raw[-1] = imu_raw[-1][:-5]
+    imu_raw = str(IMU.readline().decode("utf-8") ).split(",")
+    del imu_raw[-1]
     try:
         heading = float(imu_raw[0])
         gyro_x = float(imu_raw[1])
