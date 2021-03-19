@@ -8,8 +8,6 @@
         "l_dir":26,
         "r_dir":19,
         "step":13,
-        "lidar0_shutdown":23,
-        "lidar1_shutdown":18,
         "laser":12,
         "straight_pin":21,
         "right_pin":20,

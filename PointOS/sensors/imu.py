@@ -18,6 +18,8 @@ def read_imu():
     del imu_raw[-1]
     try:
         heading = float(imu_raw[0])
+        if(heading == 360.0):
+            heading = 0.0
         gyro_x = float(imu_raw[1])
         gyro_y = float(imu_raw[2])
         accel_x = float(imu_raw[3])
