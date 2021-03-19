@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/caleb/Applications/arduino-1.8.13/tools/**",
+                "/home/caleb/Arduino/libraries/**",
+                "/home/caleb/Applications/arduino-1.8.13/libraries/**",
+                "/home/caleb/Applications/arduino-1.8.13/hardware/tools/**",
+                "/home/caleb/Applications/arduino-1.8.13/hardware/arduino/avr/**"
+            ],
+            "forcedInclude": [
+                "/home/caleb/Applications/arduino-1.8.13/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ],
+            "defines": [
+                "USBCON"
+            ],
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}

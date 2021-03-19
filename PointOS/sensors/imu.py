@@ -13,10 +13,9 @@ def open_imu():
     IMU.readline()
 
 
-def get_imu_data():
-    imu_raw = (str(IMU.readline())).split(',')
-    imu_raw[0] = imu_raw[0][2:]
-    imu_raw[-1] = imu_raw[-1][:-5]
+def read_imu():
+    imu_raw = str(IMU.readline().decode("utf-8") ).split(",")
+    del imu_raw[-1]
     try:
         heading = float(imu_raw[0])
         gyro_x = float(imu_raw[1])
@@ -27,6 +26,7 @@ def get_imu_data():
     except Exception as e:
         print(e)
         print("bad IMU data ignore")
+        IMU.readline()
         return[-1,-1,-1,-1,-1]
     
 
@@ -34,3 +34,8 @@ def get_imu_data():
 def close_imu():
     if(IMU.is_open):
         IMU.close()
+
+
+def reset_imu():
+    IMU.write(b'r')
+    IMU.readline()
