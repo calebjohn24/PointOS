@@ -38,12 +38,12 @@ void loop()
         }
         else if (right == 1)
         {
-            myservo.write(pos + 3); // tell servo to go to position in variable 'pos'
+            myservo.write(pos + 4); // tell servo to go to position in variable 'pos'
             delay(100);
         }
         else if (left == 1)
         {
-            myservo.write(pos - 3); // tell servo to go to position in variable 'pos'
+            myservo.write(pos - 4); // tell servo to go to position in variable 'pos'
             delay(100);
         }
         else if (turn == 1)
