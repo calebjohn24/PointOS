@@ -24,6 +24,7 @@ step = pin_map['output']['step']
 laser = pin_map['output']['laser']
 
 
+'''
 motor_control.set_direction('f')
 motor_control.set_motor_res('1/2')
 
@@ -50,5 +51,5 @@ motor_control.steer_left()
 time.sleep(1)
 motor_control.steer_straight()
 time.sleep(1)
-'''
+
 GPIO.cleanup()

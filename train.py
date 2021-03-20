@@ -14,7 +14,6 @@ from PointOS.movement import motor_control
 from PointOS.sensors import imu
 
 
-
 pin_map_file = open('/home/pi/PointOS/res/pinout.json')
 pin_map = dict(json.load(pin_map_file))
 
@@ -59,35 +58,86 @@ rawCapture = PiRGBArray(camera, size=(600, 600))
 
 camera.start_preview()
 time.sleep(0.1)
-
-
-
+imu.open_imu()
 
 def read_imu():
     while imu_flag[0] == 0:
-        imu_arr = imu.get_imu_data()
+        imu_arr = imu.read_imu()
         if(imu_arr[0] != -1 and step_count[0] > 0):
 
-            output.append([steer_dir[0], step_count[0], imu_arr[0], imu_arr[1], imu_arr[2], imu_arr[3], imu_arr[4]])
+            output.append([steer_dir[0], step_count[0], imu_arr[0],
+                           imu_arr[1], imu_arr[2], imu_arr[3], imu_arr[4]])
     return
 
 
-
 def run_camera():
+    frame_count = 0
+    x_tgt = 0
     while imu_flag[0] == 0:
         for frame in camera.capture_continuous(rawCapture, format="rgb", use_video_port=True):
             img_imm = frame.array
             dst = cv2.cvtColor(img_imm, cv2.COLOR_BGR2RGB)
 
-            dst = dst[400:600, 225:375]
+            dst = dst[350:600, 200:400]
+            dst[:, :, 2] = 0
+            dst[:, :, 1] = 0
 
-            #dst[:,:,1] = 0
-            #dst[:,:,0] = 0
+            hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV)
+
+            lower_range = np.array([80, 70, 70])
+            upper_range = np.array([180, 255, 255])
+
+            mask = cv2.inRange(hsv, lower_range, upper_range)
+
+            indices = np.where(mask != [0])
+            try:
+
+                x_coordinates = indices[1]
+
+                x_coordinates = np.sort(x_coordinates)
+
+                x_coor = np.median(x_coordinates)
+
+                y_coordinates = indices[0]
+
+                y_coordinates = np.sort(y_coordinates)
+
+                y_coor = np.median(y_coordinates)
+                #print(x_coor, y_coor, 'coordinates')
+
+                if(frame_count == 0):
+                    x_tgt = x_coor
+
+                frame_count += 1
+
+                if(x_coor - x_tgt > 5):
+                    motor_control.steer_right()
+                    steer_dir[0] = 0
+                elif(x_coor - x_tgt < -5):
+                    motor_control.steer_left()
+                    steer_dir[0] = 2
+                else:
+                    motor_control.steer_straight()
+                    steer_dir[0] = 1
+
+                mask_out = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+                mask_out = cv2.circle(
+                    mask_out, (int(x_coor), int(y_coor)), 10, (0, 0, 255), 2)
+
+            except Exception as e:
+                mask_out = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+                print('e', e)
+                imu_flag[0] = 1
+                return
 
             cv2.imwrite('raw.jpg', dst)
+            cv2.imwrite('mask.jpg', mask_out)
+
+            if(imu_flag[0] == 1):
+                return
 
             #print(fps, 'fps')
-            print('------')
+            # print('------')
 
             rawCapture.truncate(0)
     return
@@ -98,19 +148,35 @@ def move_motors_forward():
     motor_control.set_motor_res('1/2')
     motor_control.motor_enable()
 
-    for i in range(1000):
-        motor_control.move_motors(0.0025)
-        step_count[0] = i
-
+    for i in range(12000):
+        if(imu_flag[0] == 0):
+            motor_control.move_motors(0.0025)
+            step_count[0] = i
+        else:
+            return
+    time.sleep(0.1)
+    motor_control.motor_disable()
     imu_flag[0] = 1
     return
 
+imu_thread = threading.Thread(target=read_imu, args=())
+motor_thread = threading.Thread(
+    target=move_motors_forward, args=())
+cam_thread = threading.Thread(
+    target=run_camera, args=())
 
 
+imu_thread.start()
+motor_thread.start()
+cam_thread.start()
 
+
+imu_thread.join()
+motor_thread.join()
+cam_thread.join()
 
 filename = "training_data/forward_td.csv"
-     
-with open(filename, 'a') as csvfile:  
-    csvwriter = csv.writer(csvfile)  
-    csvwriter.writerows(output) 
+
+with open(filename, 'a') as csvfile:
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerows(output)

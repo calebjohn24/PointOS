@@ -14,9 +14,9 @@ def open_imu():
 
 
 def read_imu():
-    imu_raw = str(IMU.readline().decode("utf-8") ).split(",")
-    del imu_raw[-1]
     try:
+        imu_raw = str(IMU.readline().decode("utf-8") ).split(",")
+        del imu_raw[-1]
         heading = float(imu_raw[0])
         if(heading == 360.0):
             heading = 0.0

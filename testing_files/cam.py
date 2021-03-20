@@ -20,7 +20,7 @@ for frame in camera.capture_continuous(rawCapture, format="rgb", use_video_port=
     img_imm = frame.array
     dst = cv2.cvtColor(img_imm, cv2.COLOR_BGR2RGB)
 
-    dst = dst[350:600, 100:500]
+    dst = dst[350:600, 200:4000]
     dst[:,:,2] = 0
     dst[:,:,1] = 0
 
