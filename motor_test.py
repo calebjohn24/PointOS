@@ -27,16 +27,16 @@ laser = pin_map['output']['laser']
 motor_control.set_direction('f')
 motor_control.set_motor_res('1/2')
 
-'''
+
 motor_control.motor_enable()
 
 
-for i in range(1000):
+for i in range(10000):
     motor_control.move_motors(0.0025)
 
 time.sleep(0.2)
 motor_control.set_direction('b')
-for i in range(1000):
+for i in range(10000):
     motor_control.move_motors(0.0025)
 
 time.sleep(0.2)
@@ -50,4 +50,5 @@ motor_control.steer_left()
 time.sleep(1)
 motor_control.steer_straight()
 time.sleep(1)
+'''
 GPIO.cleanup()
