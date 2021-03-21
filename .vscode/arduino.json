@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:nano",
     "configuration": "cpu=atmega328old",
-    "sketch": "testing_files/bno055.ino",
+    "sketch": "PointOS/movement/servo.ino",
     "port": "/dev/ttyUSB0"
 }
