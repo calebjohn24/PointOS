@@ -110,10 +110,10 @@ def run_camera_forward():
 
                 frame_count += 1
 
-                if(x_coor - x_tgt > 10):
+                if(x_coor - x_tgt > 5):
                     motor_control.steer_right()
                     steer_dir[0] = 2
-                elif(x_coor - x_tgt < -10):
+                elif(x_coor - x_tgt < -5):
                     motor_control.steer_left()
                     steer_dir[0] = 0
                 else:
@@ -186,10 +186,10 @@ def run_camera_backward():
 
                 frame_count += 1
 
-                if(x_coor - x_tgt > 10):
+                if(x_coor - x_tgt > 5):
                     motor_control.steer_left()
                     steer_dir[0] = 2
-                elif(x_coor - x_tgt < -10):
+                elif(x_coor - x_tgt < -5):
                     motor_control.steer_right()
                     steer_dir[0] = 0
                 else:
