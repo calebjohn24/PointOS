@@ -110,10 +110,10 @@ def run_camera_forward():
 
                 frame_count += 1
 
-                if(x_coor - x_tgt > 5):
+                if(x_coor - x_tgt > 4):
                     motor_control.steer_right()
                     steer_dir[0] = 2
-                elif(x_coor - x_tgt < -5):
+                elif(x_coor - x_tgt < -4):
                     motor_control.steer_left()
                     steer_dir[0] = 0
                 else:
@@ -228,7 +228,7 @@ def move_motors_forward():
 
     for i in range(12000):
         if(imu_flag[0] == 0):
-            motor_control.move_motors(0.0025)
+            motor_control.move_motors(0.0022)
             step_count[0] = i
         else:
             return
@@ -244,7 +244,7 @@ def move_motors_backward():
 
     for i in range(12000):
         if(imu_flag[0] == 0):
-            motor_control.move_motors(0.0025)
+            motor_control.move_motors(0.0022)
             step_count[0] = i
         else:
             return
@@ -280,7 +280,7 @@ with open(filename, 'a') as csvfile:
     csvwriter = csv.writer(csvfile)
     csvwriter.writerows(output)
 
-
+'''
 output = []
 imu_flag[0] = 0
 
@@ -309,3 +309,4 @@ filename = "training_data/backward_td.csv"
 with open(filename, 'a') as csvfile:
     csvwriter = csv.writer(csvfile)
     csvwriter.writerows(output)
+'''
