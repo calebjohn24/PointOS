@@ -20,15 +20,15 @@ for frame in camera.capture_continuous(rawCapture, format="rgb", use_video_port=
     img_imm = frame.array
     dst = cv2.cvtColor(img_imm, cv2.COLOR_BGR2RGB)
 
-    dst = dst[350:600, 200:4000]
+    dst = dst[350:600, 200:400]
     dst[:,:,2] = 0
     dst[:,:,1] = 0
 
     hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV) 
 
 
-    lower_range = np.array([110,70,70])
-    upper_range = np.array([130,255,255])
+    lower_range = np.array([40,40,40])
+    upper_range = np.array([255,255,255])
 
     
     mask = cv2.inRange(hsv, lower_range, upper_range)
