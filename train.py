@@ -84,7 +84,7 @@ def run_camera_forward():
 
             hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV)
 
-            lower_range = np.array([60,60,60])
+            lower_range = np.array([40,40,40])
             upper_range = np.array([255,255,255])
 
             mask = cv2.inRange(hsv, lower_range, upper_range)
@@ -186,10 +186,10 @@ def run_camera_backward():
 
                 frame_count += 1
 
-                if(x_coor - x_tgt > 5):
+                if(x_coor - x_tgt > 4):
                     motor_control.steer_left()
                     steer_dir[0] = 2
-                elif(x_coor - x_tgt < -5):
+                elif(x_coor - x_tgt < -4):
                     motor_control.steer_right()
                     steer_dir[0] = 0
                 else:
@@ -228,7 +228,7 @@ def move_motors_forward():
 
     for i in range(12000):
         if(imu_flag[0] == 0):
-            motor_control.move_motors(0.0022)
+            motor_control.move_motors(0.0025)
             step_count[0] = i
         else:
             return
@@ -244,7 +244,7 @@ def move_motors_backward():
 
     for i in range(12000):
         if(imu_flag[0] == 0):
-            motor_control.move_motors(0.0022)
+            motor_control.move_motors(0.0033)
             step_count[0] = i
         else:
             return
@@ -280,7 +280,7 @@ with open(filename, 'a') as csvfile:
     csvwriter = csv.writer(csvfile)
     csvwriter.writerows(output)
 
-'''
+
 output = []
 imu_flag[0] = 0
 
@@ -309,4 +309,3 @@ filename = "training_data/backward_td.csv"
 with open(filename, 'a') as csvfile:
     csvwriter = csv.writer(csvfile)
     csvwriter.writerows(output)
-'''
