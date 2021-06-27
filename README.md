@@ -4,6 +4,7 @@ Code From Cedar Robotics DeliveryBot
 
 Includes Code for manage IMU, Lidar, motors, and some of the code from vision system
 
+Also includes training process for IMU path correcntion in SKLearn
 
 Robot Demo Video
 
